@@ -8,7 +8,7 @@ app.use(cors())
 app.use(express.json())
 //use mongodb operation
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.khyx0yo.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -34,6 +34,17 @@ async function run() {
         const skip = pageNumber * itemsPerPage
         const result = await productsCollection.find().skip(skip).limit(itemsPerPage).toArray()
         res.send(result)
+    })
+    //special dataload
+    app.post('/productsById',async(req,res)=>{
+      const ids = req.body;
+      // console.log(ids)
+      const objectIds=ids.map(id=>new ObjectId(id))
+      console.log(objectIds)
+      const query={_id:{$in : objectIds}}
+      const result=await productsCollection.find(query).toArray()
+      res.send(result)
+      
     })
     //pagination products
     app.get('/totalProducts',async(req,res)=>{
