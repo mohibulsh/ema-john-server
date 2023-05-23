@@ -27,7 +27,6 @@ async function run() {
     const productsCollection = client.db('emaJohnDB').collection('products')
     //get all products
     app.get('/products',async(req,res)=>{
-        console.log(req.query)
         const { page, limit } = req.query;
         const pageNumber = parseInt(page) || 0;
         const itemsPerPage = parseInt(limit) || 10;
@@ -37,8 +36,7 @@ async function run() {
     })
     //special dataload
     app.post('/productsById',async(req,res)=>{
-      const ids = req.body;
-      // console.log(ids)
+      const ids = req.body.ids;
       const objectIds=ids.map(id=>new ObjectId(id))
       console.log(objectIds)
       const query={_id:{$in : objectIds}}
